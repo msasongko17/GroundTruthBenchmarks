@@ -5,7 +5,8 @@ if sys.version_info[0] < 3:
 import bisect
 import collections
 import math
-import scipy.misc
+#import scipy.misc
+import scipy.special
 import scipy.stats
 import numpy
 
@@ -70,7 +71,8 @@ class Histogram:
         return list(zip(self.intervals, self.intervals[1:]))
 
 
-nCr = scipy.misc.comb
+#nCr = scipy.misc.comb
+nCr = scipy.special.comb
 
 #Time distance histogram to reuse distance histogram Model
 class Tdh2RdhModel:
