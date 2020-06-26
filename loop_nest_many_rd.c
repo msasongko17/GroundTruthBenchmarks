@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <omp.h>
 
 int main () {
 	int val = 0;
@@ -11,6 +12,8 @@ int main () {
 		:
 		: "memory", "%ecx", "%edx"
             );*/
+#pragma omp parallel
+{
 	int array1[800];
 	__asm__ __volatile__ ("movl $1000000, %%edx\n\t"
 		"loop1:\n\t"
@@ -52,7 +55,7 @@ int main () {
                 : "c" (array1)
                 : "%edx", "%eax", "memory", "cc"
             );
-	
+}	
 	printf("RD: 50, expected count: 50 M, RD: 200, expected count: 200 M, RD: 400, expected count: 400 M, RD: 800, expected count: 50 M, RD850, expected count: 150 M, RD: 1050, expected count 200 M, RD: 1450, expected count 400M\n");
 	return 0;
 }

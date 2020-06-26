@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <omp.h>
 
 int main () {
 	int val = 0;
+	int num_threads;
 
-	#pragma omp parallel num_threads(4) 
+	#pragma omp parallel
 	{
 	int array1[200];
 	__asm__ __volatile__ ("movl $1000000, %%edx\n\t"
@@ -21,8 +23,11 @@ int main () {
                 : "c" (array1)
                 : "%edx", "%eax", "memory", "cc"
             );
+		//fprintf(stderr, "in thread %d out of %d threads()\n", omp_get_thread_num(), omp_get_num_threads());
+		#pragma omp single
+		num_threads = omp_get_num_threads();
 	}
 
-	printf("RD: 200, expected frequency 800 M\n");
+	printf("RD: 200, expected frequency %d M\n", 200 * num_threads);
 	return 0;
 }
