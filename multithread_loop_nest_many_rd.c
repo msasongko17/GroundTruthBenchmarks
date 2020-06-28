@@ -12,7 +12,7 @@ int main () {
 		:
 		: "memory", "%ecx", "%edx"
             );*/
-#pragma omp parallel num_threads(4)
+#pragma omp parallel
 	{
 	int array1[800];
 	__asm__ __volatile__ ("movl $1000000, %%edx\n\t"
