@@ -1,0 +1,89 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include<omp.h>
+#include<stdint.h>
+#include<atomic>
+#include "util.cpp"
+
+#define CACHELINE_SZ (64)
+
+struct SharedData_t{
+	volatile uint64_t dummy1[CACHELINE_SZ/sizeof(uint64_t)]; // avoid buddy cacheline prefetching
+	volatile uint64_t data;
+	volatile uint64_t dummy2[CACHELINE_SZ/sizeof(uint64_t)]; // avoid buddy cacheline prefetching
+}__attribute__((aligned(64)));
+
+SharedData_t * trueSharingData;
+SharedData_t * trueSharingData2;
+
+using namespace std;
+
+int main(int argc, char ** argv){
+	int nThreads = 4;
+	float shareFrac1 = -1;
+	float shareFrac2 = -1;
+	uint64_t nIter = -1;
+
+	int thread1a = -1;
+	int thread1b = -1;
+	int thread2a = -1;
+	int thread2b = -1;
+
+	trueSharingData = (SharedData_t *) malloc (sizeof(struct SharedData_t));
+	trueSharingData2 = (SharedData_t *) malloc (sizeof(struct SharedData_t));
+	ParseArg(argc, argv, shareFrac1, shareFrac2, thread1a, thread1b, thread2a, thread2b, nIter);
+	printf("%0.2lf, %0.2lf, %d, %d, %d, %d, %ld\n", shareFrac1, shareFrac2, thread1a, thread1b, thread2a, thread2b, nIter);
+	atomic<uint64_t> justToAvoidCompilerOptimization;
+#pragma omp parallel num_threads(nThreads) firstprivate(nIter)
+	{
+		int me = omp_get_thread_num();
+		long private_counter = 0;
+		volatile uint64_t *tsData;
+		float shareFrac = -1;
+		if(me == thread1a || me == thread1b) {
+		  tsData = &(trueSharingData->data);
+		  shareFrac = shareFrac1;
+		} else {
+		  tsData = &(trueSharingData2->data);
+		  shareFrac = shareFrac2;
+		}
+		volatile uint64_t privateData;
+		//volatile uint64_t privateData;
+		//printf("public address: %lx\n", tsData);
+		//printf("private address: %lx\n", &privateData);
+		uint64_t i;
+		for(i = 0 ; i < nIter; i++) {
+			// Use RDTSC as a proxy random number generator
+			unsigned long lo, hi;
+		        asm volatile( "rdtsc" : "=a" (lo), "=d" (hi) ); 
+        		int rNum  = (lo % 54121) % 100; // mod by a prime.
+			// if the random number is < shareFrac, perform a local memory operation
+			if (rNum < shareFrac) {
+			// Else touch the data that is considered to be "owned" by me.
+			//*tsData = rNum2;
+			__asm__ __volatile__ ("movl %1, %%ebx;"
+			"movl %%ebx, %0;"
+			: "=m" (*tsData)
+			: "r" (rNum)
+			: "%ebx");
+			} else {
+			  //printf("it is executed %d\n", i);
+			  //privateData = rNum;
+			 __asm__ __volatile__ ("movl %1, %%ebx;"
+			"movl %%ebx, %0;"
+			: "=m" (privateData)
+			: "r" (rNum)
+			: "%ebx");
+			}
+		}
+		//printf("no prob\n");
+		justToAvoidCompilerOptimization += *tsData;		
+		justToAvoidCompilerOptimization += privateData;
+	}
+	free(trueSharingData);
+	free(trueSharingData2);
+	
+	return justToAvoidCompilerOptimization.load() ^ justToAvoidCompilerOptimization.load();
+}
