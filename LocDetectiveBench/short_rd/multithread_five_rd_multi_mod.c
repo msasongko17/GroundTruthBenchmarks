@@ -38,7 +38,7 @@ int main () {
                 : "%edx", "%eax", "memory", "cc"
             );
         // time distance: 100, frequency: 100 M
-	__asm__ __volatile__ ("movl$1000000, %%edx\n\t"
+	__asm__ __volatile__ ("movl $1000000, %%edx\n\t"
                 "loop3:\n\t"
                 "movl $100, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"

@@ -22,7 +22,7 @@ int main () {
 	int array4[600];
 	int array5[1500];
 	// time distance: 50, frequency: 30 M 
-	__asm__ __volatile__ ("movl $600000, %%edx\n\t"
+	__asm__ __volatile__ ("movl $6000000, %%edx\n\t"
 		"loop1:\n\t"
 		"movl $50, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
@@ -38,7 +38,7 @@ int main () {
                 : "%edx", "%eax", "memory", "cc"
             );
         // time distance: 100, frequency: 60 M 
-	__asm__ __volatile__ ("movl$600000, %%edx\n\t"
+	__asm__ __volatile__ ("movl $6000000, %%edx\n\t"
                 "loop3:\n\t"
                 "movl $100, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"
@@ -54,7 +54,7 @@ int main () {
                 : "%edx", "%eax", "memory", "cc"
             );	
         // time distance: 300, frequency: 150 M 
-	__asm__ __volatile__ ("movl $500000, %%edx\n\t"
+	__asm__ __volatile__ ("movl $5000000, %%edx\n\t"
                 "loop4:\n\t"
                 "movl $300, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"
@@ -70,7 +70,7 @@ int main () {
                 : "%edx", "%eax", "memory", "cc"
             );
         // time distance: 600, frequency: 60 M
-	__asm__ __volatile__ ("movl $100000, %%edx\n\t"
+	__asm__ __volatile__ ("movl $1000000, %%edx\n\t"
                 "loop6:\n\t"
                 "movl $600, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"
@@ -86,7 +86,7 @@ int main () {
                 : "%edx", "%eax", "memory", "cc"
             );
         // time distance: 1500, frequency: 30 M
-        __asm__ __volatile__ ("movl $20000, %%edx\n\t"
+        __asm__ __volatile__ ("movl $200000, %%edx\n\t"
                 "loop8:\n\t"
                 "movl $1500, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"
@@ -104,6 +104,6 @@ int main () {
 	#pragma omp single
 	num_threads = omp_get_num_threads();
 	}
-	printf("RD: 49, expected frequency %d M, RD: 99, expected frequency %d M, RD: 299, expected frequency %d M, RD: 599, expected frequency %d M, RD: 1499, expected frequency %d M\n", 30 * num_threads, 60 * num_threads, 150 * num_threads, 60 * num_threads, 30 * num_threads);
+	printf("RD: 49, expected frequency %d M, RD: 99, expected frequency %d M, RD: 299, expected frequency %d M, RD: 599, expected frequency %d M, RD: 1499, expected frequency %d M\n", 300 * num_threads, 600 * num_threads, 1500 * num_threads, 600 * num_threads, 300 * num_threads);
 	return 0;
 }
