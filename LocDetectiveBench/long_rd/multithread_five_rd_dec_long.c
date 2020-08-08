@@ -17,7 +17,7 @@ int main () {
 #pragma omp parallel
 	{
 	
-	char array1[400000];
+	char array1[4000000];
 	// time distance: 200000, frequency: 40 M 
 	__asm__ __volatile__ ("movl $200, %%edx\n\t"
 		"loop1:\n\t"
