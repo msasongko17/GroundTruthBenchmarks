@@ -1,8 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <omp.h>
 
-int main () {
-	int jump_size = 16;
+int main (int argc, char *argv[]) {
+	if(argc != 2) {
+		fprintf(stderr, "Usage: ./exec jump_size\n");
+		return -1;
+	}
+	int jump_size = atoi(argv[1]);
 	char array1[1000000];
 #pragma omp parallel num_threads(2)
 {
@@ -68,17 +74,6 @@ int main () {
         }
 		
 }
-	/*for(int i = 0; i < 5; i++) {
-		__asm__ __volatile__("movl $1, %%eax\n\t"
-			"movl %%eax, %0\n\t"
-			: "=m" (array1[i])
-			: "r" (i)
-			: "memory", "%eax"
-		);
-	}*/
-	/*for(int i = 0; i < 4000000; i++) {
-		printf("%d: %d\n", i, array1[i]);
-	}*/
-	//printf("val: %d\n", val);
+	fprintf(stderr, "jump_size: %d\n", jump_size);	
 	return 0;
 }
