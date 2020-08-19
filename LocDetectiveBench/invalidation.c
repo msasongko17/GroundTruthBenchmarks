@@ -23,6 +23,7 @@ int main () {
 		"movq %%rcx, %%rbx\n\t"
 		"loop:\n\t"
 		"movl $4, (%%rbx)\n\t"
+		"mfence\n\t"
 		"addq $1, %%rbx\n\t"
 		"decl %%eax\n\t"
 		"jnz loop\n\t"

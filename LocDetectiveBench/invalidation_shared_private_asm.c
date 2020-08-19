@@ -2,7 +2,7 @@
 #include <omp.h>
 
 int main () {
-	int jump_size = 4;
+	int jump_size = 16;
 	char array1[1000000];
 #pragma omp parallel num_threads(2)
 {
@@ -19,6 +19,7 @@ int main () {
 		"and %%eax, %%r8d\n\t"
 		"jnz private\n\t"
 		"movl $4, (%%rbx)\n\t"
+		"mfence\n\t"
 		"jmp increment\n\t"
 		"private:\n\t"
 		"movl $4, (%%r9)\n\t"
@@ -48,6 +49,7 @@ int main () {
                 "and %%eax, %%r8d\n\t"
                 "jnz private1\n\t"
                 "movl $4, (%%rbx)\n\t"
+		"mfence\n\t"
                 "jmp increment1\n\t"
                 "private1:\n\t"
                 "movl $4, (%%r9)\n\t"
