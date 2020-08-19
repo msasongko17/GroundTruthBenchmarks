@@ -2,12 +2,12 @@
 #include <omp.h>
 
 int main () {
-	int jump_size = 2;
+	int jump_size = 4;
 	char array1[1000000];
-//#pragma omp parallel num_threads(2)
-//{
+#pragma omp parallel num_threads(2)
+{
 	char array2[1000000];
-	//if(omp_get_thread_num() == 0) {
+	if(omp_get_thread_num() == 0) {
 	__asm__ __volatile__ (
 		"movl $1000, %%edx\n\t"
 		"loop4:\n\t"
@@ -34,28 +34,38 @@ int main () {
                 : "c" (array1), "S" (array2), "D" (jump_size)
                 : "%eax", "%rbx", "%r8", "%r9", "memory", "cc"
             );
-	//}
-/*
+	}
+
 	if(omp_get_thread_num() == 1) {
         __asm__ __volatile__ (
                 "movl $1000, %%edx\n\t"
                 "loop5:\n\t"
-                "movl $1000000, %%eax\n\t"
+                "movl $0, %%eax\n\t"
                 "movq %%rcx, %%rbx\n\t"
+                "movq %%rsi, %%r9\n\t"
                 "loop1:\n\t"
+                "lea -1(%%edi,1),%%r8d\n\t"
+                "and %%eax, %%r8d\n\t"
+                "jnz private1\n\t"
                 "movl $4, (%%rbx)\n\t"
-                "addq $1, %%rbx\n\t"
-                "decl %%eax\n\t"
-                "jnz loop1\n\t"
+                "jmp increment1\n\t"
+                "private1:\n\t"
+                "movl $4, (%%r9)\n\t"
+                "increment1:\n\t"
+                "addq $2, %%rbx\n\t"
+                "addq $2, %%r9\n\t"
+                "addl $2, %%eax\n\t"
+                "cmp $1000000, %%eax\n\t"
+                "jne loop1\n\t"
                 "decl %%edx\n\t"
                 "jnz loop5\n\t"
                 :
-                : "c" (array1)
-                : "%eax", "%rbx", "memory", "cc"
+                : "c" (array1), "S" (array2), "D" (jump_size)
+                : "%eax", "%rbx", "%r8", "%r9", "memory", "cc"
             );
         }
-*/	
-//}
+		
+}
 	/*for(int i = 0; i < 5; i++) {
 		__asm__ __volatile__("movl $1, %%eax\n\t"
 			"movl %%eax, %0\n\t"
