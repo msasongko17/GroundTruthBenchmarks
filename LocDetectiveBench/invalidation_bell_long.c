@@ -13,7 +13,8 @@ int main () {
 		: "=m" (val)
 		:
 		: "memory", "%ecx", "%edx"
-            );*/
+		);*/
+	char shared_array[4000000];
 #pragma omp parallel
 	{
 	
@@ -21,6 +22,13 @@ int main () {
 	// time distance: 200000, frequency: 10 M 
 	__asm__ __volatile__ ("movl $50, %%edx\n\t"
 		"loop1:\n\t"
+                "movl $200000, %%eax\n\t"
+                "movq %%rsi, %%rbx\n\t"
+                "loop01:\n\t"
+                "movl %%edx, (%%rbx)\n\t"
+                "addq $1, %%rbx\n\t"
+                "decl %%eax\n\t"
+                "jnz loop01\n\t"
 		"movl $200000, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
 		"loop:\n\t"
@@ -31,12 +39,19 @@ int main () {
 		"decl %%edx\n\t"
 		"jnz loop1\n\t"
                 : 
-                : "c" (array1)
+                : "c" (array1), "S" (shared_array)
                 : "%edx", "%eax", "memory", "cc"
             );
 	// time distance: 500000, frequency: 20 M 
 	__asm__ __volatile__ ("movl $40, %%edx\n\t"
 		"loop3:\n\t"
+                "movl $500000, %%eax\n\t"
+                "movq %%rsi, %%rbx\n\t"
+                "loop21:\n\t"
+                "movl %%edx, (%%rbx)\n\t"
+                "addq $1, %%rbx\n\t"
+                "decl %%eax\n\t"
+                "jnz loop21\n\t"
 		"movl $500000, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
 		"loop2:\n\t"
@@ -47,12 +62,19 @@ int main () {
 		"decl %%edx\n\t"
 		"jnz loop3\n\t"
                 : 
-                : "c" (array1)
+                : "c" (array1), "S" (shared_array)
                 : "%edx", "%eax", "memory", "cc"
             );	
 	// time distance: 1000000, frequency: 40 M 
 	__asm__ __volatile__ ("movl $40, %%edx\n\t"
 		"loop5:\n\t"
+                "movl $1000000, %%eax\n\t"
+                "movq %%rsi, %%rbx\n\t"
+                "loop41:\n\t"
+                "movl %%edx, (%%rbx)\n\t"
+                "addq $1, %%rbx\n\t"
+                "decl %%eax\n\t"
+                "jnz loop41\n\t"
 		"movl $1000000, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
 		"loop4:\n\t"
@@ -63,12 +85,19 @@ int main () {
 		"decl %%edx\n\t"
 		"jnz loop5\n\t"
                 : 
-                : "c" (array1)
+                : "c" (array1), "S" (shared_array)
                 : "%edx", "%eax", "memory", "cc"
             );
 	// time distance: 2000000, frequency: 20 M 
 	__asm__ __volatile__ ("movl $10, %%edx\n\t"
 		"loop7:\n\t"
+                "movl $2000000, %%eax\n\t"
+                "movq %%rsi, %%rbx\n\t"
+                "loop61:\n\t"
+                "movl %%edx, (%%rbx)\n\t"
+                "addq $1, %%rbx\n\t"
+                "decl %%eax\n\t"
+                "jnz loop61\n\t"
 		"movl $2000000, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
 		"loop6:\n\t"
@@ -79,12 +108,19 @@ int main () {
 		"decl %%edx\n\t"
 		"jnz loop7\n\t"
                 : 
-                : "c" (array1)
+                : "c" (array1), "S" (shared_array)
                 : "%edx", "%eax", "memory", "cc"
             );
         // time distance: 4000000, frequency: 8 M 
 	__asm__ __volatile__ ("movl $3, %%edx\n\t"
 		"loop9:\n\t"
+                "movl $4000000, %%eax\n\t"
+                "movq %%rsi, %%rbx\n\t"
+                "loop81:\n\t"
+                "movl %%edx, (%%rbx)\n\t"
+                "addq $1, %%rbx\n\t"
+                "decl %%eax\n\t"
+                "jnz loop81\n\t"
 		"movl $4000000, %%eax\n\t"
 		"movq %%rcx, %%rbx\n\t"
 		"loop8:\n\t"
@@ -95,9 +131,9 @@ int main () {
 		"decl %%edx\n\t"
 		"jnz loop9\n\t"
                 : 
-                : "c" (array1)
+                : "c" (array1), "S" (shared_array)
                 : "%edx", "%eax", "memory", "cc"
-            );    
+            );
 	#pragma omp single
 	num_threads = omp_get_num_threads();
 	}
