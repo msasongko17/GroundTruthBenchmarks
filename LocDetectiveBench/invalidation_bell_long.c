@@ -139,6 +139,6 @@ int main () {
 	#pragma omp single
 	num_threads = omp_get_num_threads();
 	}
-	printf("RD: 200000, expected frequency %d M, RD: 500000, expected frequency %d M, RD: 1000000, expected frequency %d M, RD: 2000000, expected frequency %d M, RD: 4000000, expected frequency %d M\n", 10 * num_threads, 20 * num_threads, 40 * num_threads, 20 * num_threads, 8 * num_threads);
+	printf("expected RD1: %d, reuse count1: %d, expected RD2: %d, reuse count2: %d, expected RD3: %d, reuse count3: %d, expected RD4: %d, reuse count4: %d, expected RD5: %d, reuse count5: %d\n", a1 + a2, 50 * a1 * num_threads, b1 + a2, 40 * b1 * num_threads, c1 + a2, 40 * c1 * num_threads, d1 + a2, 10 * d1 * num_threads, e1 + a2, 3 * e1 * num_threads);
 	return 0;
 }
