@@ -15,7 +15,8 @@ int main () {
 		: "memory", "%ecx", "%edx"
 		);*/
 	char shared_array[4000000];
-	int a1=200000, b1=500000, c1=1000000, d1=2000000, e1=4000000, a2=200000;
+	// a2 must be bigger than 0
+	int a1=200000, b1=500000, c1=1000000, d1=2000000, e1=4000000, a2=600000;
 #pragma omp parallel
 	{
 	int output;
@@ -43,6 +44,7 @@ int main () {
                 : "c" (array1), "S" (shared_array), "b" (a1), "D" (a2)
                 : "%edx", "%eax", "memory", "cc"
             );
+#pragma omp barrier
 	//fprintf(stderr, "output: %d\n", output);
 	// time distance: 500000, frequency: 20 M 
 	__asm__ __volatile__ ("movl $40, %%edx\n\t"
@@ -67,6 +69,7 @@ int main () {
                 : "c" (array1), "S" (shared_array), "b" (b1), "D" (a2)
                 : "%edx", "%eax", "memory", "cc"
             );	
+#pragma omp barrier
 	// time distance: 1000000, frequency: 40 M 
 	__asm__ __volatile__ ("movl $40, %%edx\n\t"
 		"loop5:\n\t"
@@ -90,6 +93,7 @@ int main () {
                 : "c" (array1), "S" (shared_array), "b" (c1), "D" (a2)
                 : "%edx", "%eax", "memory", "cc"
             );
+#pragma omp barrier
 	// time distance: 2000000, frequency: 20 M 
 	__asm__ __volatile__ ("movl $10, %%edx\n\t"
 		"loop7:\n\t"
@@ -113,6 +117,7 @@ int main () {
                 : "c" (array1), "S" (shared_array), "b" (d1), "D" (a2)
                 : "%edx", "%eax", "memory", "cc"
             );
+#pragma omp barrier
         // time distance: 4000000, frequency: 8 M 
 	__asm__ __volatile__ ("movl $3, %%edx\n\t"
 		"loop9:\n\t"
