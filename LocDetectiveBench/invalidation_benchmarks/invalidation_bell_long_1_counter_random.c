@@ -23,7 +23,7 @@ int main () {
 		);*/
 	char shared_array[4000000];
 	// a2 must be bigger than 0
-	int a = 1000, a1=1, b1=300000, c1=800000, d1=1800000, e1=3800000, a2=800000;
+	int a = 1000, a1=200000, b1=500000, c1=1000000, d1=2000000, e1=4000000, a2=1000;
 	uint64_t prob1 = 34, prob2 = 61, prob3 = 88, prob4 = 95;
 	uint64_t rand_num;
 	#pragma omp parallel
@@ -154,8 +154,9 @@ int main () {
             	}
             	}
 		#pragma omp single
+		{
 		num_threads = omp_get_num_threads();
+		}
 	}
-	printf("expected RD1: %d, reuse count1: %d, expected RD2: %d, reuse count2: %d, expected RD3: %d, reuse count3: %d, expected RD4: %d, reuse count4: %d, expected RD5: %d, reuse count5: %d\n", a1 + a2, 50 * a1 * num_threads, b1 + a2, 40 * b1 * num_threads, c1 + a2, 40 * c1 * num_threads, d1 + a2, 10 * d1 * num_threads, e1 + a2, 3 * e1 * num_threads);
 	return 0;
 }
