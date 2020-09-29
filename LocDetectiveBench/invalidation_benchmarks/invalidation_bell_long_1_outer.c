@@ -16,35 +16,39 @@ int main () {
 		);*/
 	char shared_array[4000000];
 	// a2 must be bigger than 0
-	int a2=1000, b2=300000, c2=800000, d2=1800000, e2=3800000, a3=1, a = 10;
-#pragma omp parallel shared(a2, b2, c2, d2, e2, a3, a)
+	int a3=1, a = 10;
+#pragma omp parallel shared(a3, a)
 	{
 	int output;
 	char array1[4000000];
 	// time distance: 200000, frequency: 10 M 
 	__asm__ __volatile__ ("loop0:\n\t"
+
 		"movl $50, %%r8d\n\t"
+		"movl $0, %%r11d\n\t"
 		"loop1:\n\t"
                 "movl %%edx, %%ebx\n\t"
                 "movq %%rsi, %%r9\n\t"
                 "loop11:\n\t"
-                //"movb $1, (%%r9)\n\t"
-                "movl %%r8d, (%%r9)\n\t"
+                //"movl %%r8d, (%%r9)\n\t"
+		"movl %%r11d, (%%r9)\n\t"
                 "addq $1, %%r9\n\t"
                 "decl %%ebx\n\t"
                 "jnz loop11\n\t"
                 "movl $200000, %%ebx\n\t"
 		"movq %%rdi, %%r9\n\t"
 		"loop12:\n\t"
-		"movl %%r8d, (%%r9)\n\t"
+		//"movl %%r8d, (%%r9)\n\t"
+		"movl %%r11d, (%%r9)\n\t"
 		"addq $1, %%r9\n\t"
 		"movb (%%r9), %%r10b\n\t"
 		"addq $1, %%r9\n\t"
 		"subl $2, %%ebx\n\t"
 		"jnz loop12\n\t"
+		"addl $1, %%r11d\n\t"
 		"decl %%r8d\n\t"
 		"jnz loop1\n\t"
-		
+		/*
 		"movl $40, %%r8d\n\t"
 		"loop2:\n\t"
                 "movl %%edx, %%ebx\n\t"
@@ -127,17 +131,24 @@ int main () {
 		"subl $2, %%ebx\n\t"
 		"jnz loop52\n\t"
 		"decl %%r8d\n\t"
-		"jnz loop5\n\t"
+		"jnz loop5\n\t"*/
 		
 		"decl %%ecx\n\t"
 		"jnz loop0\n\t"
                 :
                 : "S" (array1), "D" (shared_array), "c" (a), "d" (a3)
-                : "%r8", "%r9", "%r10", "memory", "cc"
+                : "%r8", "%r9", "%r10", "%r11", "memory", "cc"
             );
 	#pragma omp single
+	{
 	num_threads = omp_get_num_threads();
+		for(int i = 0; i < a3; i++) {
+			fprintf(stderr, "shared_array[%d]: %d\t", i, shared_array[i]);
+		}
+		fprintf(stderr, "\n");
 	}
+	}
+
 	//printf("expected RD1: %d, reuse count1: %d, expected RD2: %d, reuse count2: %d, expected RD3: %d, reuse count3: %d, expected RD4: %d, reuse count4: %d, expected RD5: %d, reuse count5: %d\n", a1 + a2, 50 * a1 * num_threads, b1 + a2, 40 * b1 * num_threads, c1 + a2, 40 * c1 * num_threads, d1 + a2, 10 * d1 * num_threads, e1 + a2, 3 * e1 * num_threads);
 	return 0;
 }
