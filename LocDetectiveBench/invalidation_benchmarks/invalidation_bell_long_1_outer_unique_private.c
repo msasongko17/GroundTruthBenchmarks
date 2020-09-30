@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <omp.h>
+
+// bin start size: 130
+int main () {
+	int val = 0;
+	int num_threads = 0;
+	/*__asm__ __volatile__ ("movl $100000000, %%ecx\n\t"
+                "movl $0, %%edx\n\t"
+                "1:\n\t"
+                "incl %0\n\t"
+                "loop 1b\n\t"
+		: "=m" (val)
+		:
+		: "memory", "%ecx", "%edx"
+		);*/
+	char shared_array[4000000];
+	// a2 must be bigger than 0
+	int a1=100000, b1=200000, c1=400000, d1=1000000, e1=2000000, a2=1;
+#pragma omp parallel
+	{
+	int output;
+	char array1[100000];
+	char array2[200000];
+	char array3[400000];
+	char array4[1000000];
+	char array5[2000000];
+	// time distance: 200000, frequency: 10 M 
+	for(int i =  0; i < 10; i++) {
+	__asm__ __volatile__ ("movl $50, %%edx\n\t"
+		"loop1:\n\t"
+                "movl %%edi, %%eax\n\t"
+                "movq %%rsi, %%r8\n\t"
+                "loop01:\n\t"
+                "movl %%edx, (%%r8)\n\t"
+                "addq $1, %%r8\n\t"
+                "decl %%eax\n\t"
+                "jnz loop01\n\t"
+		"movl %%ebx, %%eax\n\t"
+		"movq %%rcx, %%r8\n\t"
+		"loop:\n\t"
+		"movb (%%r8), %%r9b\n\t"
+		"addq $1, %%r8\n\t"
+		"movl %%edx, (%%r8)\n\t"
+		"addq $1, %%r8\n\t"
+		"subl $2, %%eax\n\t"
+		"jnz loop\n\t"
+		"decl %%edx\n\t"
+		"jnz loop1\n\t"
+                :
+                : "c" (array1), "S" (shared_array), "b" (a1), "D" (a2)
+                : "%edx", "%eax", "memory", "cc"
+            );
+	__asm__ __volatile__ ("movl $40, %%edx\n\t"
+		"loop2:\n\t"
+                "movl %%edi, %%eax\n\t"
+                "movq %%rsi, %%r8\n\t"
+                "loop02:\n\t"
+                "movl %%edx, (%%r8)\n\t"
+                "addq $1, %%r8\n\t"
+                "decl %%eax\n\t"
+                "jnz loop02\n\t"
+		"movl %%ebx, %%eax\n\t"
+		"movq %%rcx, %%r8\n\t"
+		"loop12:\n\t"
+		"movb (%%r8), %%r9b\n\t"
+		"addq $1, %%r8\n\t"
+		"movl %%edx, (%%r8)\n\t"
+		"addq $1, %%r8\n\t"
+		"subl $2, %%eax\n\t"
+		"jnz loop12\n\t"
+		"decl %%edx\n\t"
+		"jnz loop2\n\t"
+                :
+                : "c" (array2), "S" (shared_array), "b" (b1), "D" (a2)
+                : "%edx", "%eax", "memory", "cc"
+            );	
+	// time distance: 1000000, frequency: 40 M 
+	__asm__ __volatile__ ("movl $40, %%edx\n\t"
+		"loop3:\n\t"
+                "movl %%edi, %%eax\n\t"
+                "movq %%rsi, %%r8\n\t"
+                "loop03:\n\t"
+                "movl %%edx, (%%r8)\n\t"
+                "addq $1, %%r8\n\t"
+                "decl %%eax\n\t"
+                "jnz loop03\n\t"
+		"movl %%ebx, %%eax\n\t"
+		"movq %%rcx, %%r8\n\t"
+		"loop13:\n\t"
+		"movb (%%r8), %%r9b\n\t"
+		"addq $1, %%r8\n\t"
+		"movl %%edx, (%%r8)\n\t"
+		"addq $1, %%r8\n\t"
+		"subl $2, %%eax\n\t"
+		"jnz loop13\n\t"
+		"decl %%edx\n\t"
+		"jnz loop3\n\t"
+                :
+                : "c" (array3), "S" (shared_array), "b" (c1), "D" (a2)
+                : "%edx", "%eax", "memory", "cc"
+            );
+	// time distance: 2000000, frequency: 20 M 
+	__asm__ __volatile__ ("movl $10, %%edx\n\t"
+		"loop4:\n\t"
+                "movl %%edi, %%eax\n\t"
+                "movq %%rsi, %%r8\n\t"
+                "loop04:\n\t"
+                "movl %%edx, (%%r8)\n\t"
+                "addq $1, %%r8\n\t"
+                "decl %%eax\n\t"
+                "jnz loop04\n\t"
+		"movl %%ebx, %%eax\n\t"
+		"movq %%rcx, %%r8\n\t"
+		"loop14:\n\t"
+		"movb (%%r8), %%r9b\n\t"
+		"addq $1, %%r8\n\t"
+		"movl %%edx, (%%r8)\n\t"
+		"addq $1, %%r8\n\t"
+		"subl $2, %%eax\n\t"
+		"jnz loop14\n\t"
+		"decl %%edx\n\t"
+		"jnz loop4\n\t"
+                :
+                : "c" (array4), "S" (shared_array), "b" (d1), "D" (a2)
+                : "%edx", "%eax", "memory", "cc"
+            );
+        // time distance: 4000000, frequency: 8 M 
+	__asm__ __volatile__ ("movl $3, %%edx\n\t"
+		"loop5:\n\t"
+                "movl %%edi, %%eax\n\t"
+                "movq %%rsi, %%r8\n\t"
+                "loop05:\n\t"
+                "movl %%edx, (%%r8)\n\t"
+                "addq $1, %%r8\n\t"
+                "decl %%eax\n\t"
+                "jnz loop05\n\t"
+		"movl %%ebx, %%eax\n\t"
+		"movq %%rcx, %%r8\n\t"
+		"loop15:\n\t"
+		"movb (%%r8), %%r9b\n\t"
+		"addq $1, %%r8\n\t"
+		"movl %%edx, (%%r8)\n\t"
+		"addq $1, %%r8\n\t"
+		"subl $2, %%eax\n\t"
+		"jnz loop15\n\t"
+		"decl %%edx\n\t"
+		"jnz loop5\n\t"
+                :
+                : "c" (array5), "S" (shared_array), "b" (e1), "D" (a2)
+                : "%edx", "%eax", "memory", "cc"
+            );
+        }
+	#pragma omp single
+	num_threads = omp_get_num_threads();
+	}
+	return 0;
+}
