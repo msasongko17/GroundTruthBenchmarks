@@ -16,15 +16,15 @@ int main () {
 		);*/
 	char shared_array[4000000];
 	// a2 must be bigger than 0
-	int a1=100000, b1=200000, c1=400000, d1=1000000, e1=2000000, a2=1;
+	int a1=100000, b1=200000, c1=400000, d1=800000, e1=1600000, a2=1;
 #pragma omp parallel
 	{
 	int output;
 	char array1[100000];
 	char array2[200000];
 	char array3[400000];
-	char array4[1000000];
-	char array5[2000000];
+	char array4[800000];
+	char array5[1600000];
 	// time distance: 200000, frequency: 10 M 
 	for(int i =  0; i < 10; i++) {
 	__asm__ __volatile__ ("movl $50, %%edx\n\t"

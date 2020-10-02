@@ -23,7 +23,7 @@ int main () {
 		);*/
 	char shared_array[4000000];
 	// a2 must be bigger than 0
-	int a = 1000, a1=100000, b1=200000, c1=400000, d1=1000000, e1=2000000, a2=1000;
+	int a = 1000, a1=100000, b1=200000, c1=400000, d1=800000, e1=1600000, a2=1;
 	uint64_t prob1 = 35, prob2 = 62, prob3 = 89, prob4 = 97;
 	uint64_t rand_num;
 	#pragma omp parallel
@@ -32,8 +32,8 @@ int main () {
 		char array1[100000];
 		char array2[200000];
 		char array3[400000];
-		char array4[1000000];
-		char array5[2000000];
+		char array4[800000];
+		char array5[1600000];
 		//int case1 = 0, case2 = 0, case3 = 0, case4 = 0, case5 = 0;
 		for(int i = 0; i < a; i++) {
 		#pragma omp single
