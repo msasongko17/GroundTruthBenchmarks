@@ -16,7 +16,9 @@ int main () {
 		);*/
 	char shared_array[4000000];
 	// a2 must be bigger than 0
-	int a1=100000, b1=200000, c1=400000, d1=800000, e1=1600000, a2=1;
+	int a1 = 2, b1 = 100000, c1 = 300000, d1 = 700000, e1 = 1500000, a2 = 200000;
+	//int a1 = 50000, b1 = 150000, c1 = 350000, d1 = 750000, e1 = 1550000, a2 = 100000;
+	//int a1 = 100000, b1 = 200000, c1 = 400000, d1 = 800000, e1 = 1600000, a2 = 1;
 #pragma omp parallel
 	{
 	int output;
@@ -34,7 +36,7 @@ int main () {
                 "movq %%rsi, %%r8\n\t"
                 "loop01:\n\t"
                 "movl %%edx, (%%r8)\n\t"
-                "mfence\n\t"
+                //"mfence\n\t"
                 //"movl %%r10d, (%%r8)\n\t"
                 "addq $1, %%r8\n\t"
                 "decl %%eax\n\t"
@@ -63,7 +65,7 @@ int main () {
                 "movq %%rsi, %%r8\n\t"
                 "loop02:\n\t"
                 "movl %%edx, (%%r8)\n\t"
-                "mfence\n\t"
+                //"mfence\n\t"
                 //"movl %%r10d, (%%r8)\n\t"
                 "addq $1, %%r8\n\t"
                 "decl %%eax\n\t"
@@ -93,7 +95,7 @@ int main () {
                 "movq %%rsi, %%r8\n\t"
                 "loop03:\n\t"
                 "movl %%edx, (%%r8)\n\t"
-                "mfence\n\t"
+                //"mfence\n\t"
                 //"movl %%r10d, (%%r8)\n\t"
                 "addq $1, %%r8\n\t"
                 "decl %%eax\n\t"
@@ -124,7 +126,7 @@ int main () {
                 "movq %%rsi, %%r8\n\t"
                 "loop04:\n\t"
                 "movl %%edx, (%%r8)\n\t"
-                "mfence\n\t"
+                //"mfence\n\t"
                 //"movl %%r10d, (%%r8)\n\t"
                 "addq $1, %%r8\n\t"
                 "decl %%eax\n\t"
@@ -154,7 +156,7 @@ int main () {
                 "movq %%rsi, %%r8\n\t"
                 "loop05:\n\t"
                 "movl %%edx, (%%r8)\n\t"
-                "mfence\n\t"
+                //"mfence\n\t"
                 //"movl %%r10d, (%%r8)\n\t"
                 "addq $1, %%r8\n\t"
                 "decl %%eax\n\t"
